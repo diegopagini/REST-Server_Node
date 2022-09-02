@@ -1,4 +1,5 @@
 /** @format */
+import cors from 'cors';
 import express from 'express';
 
 export class Server {
@@ -15,6 +16,7 @@ export class Server {
 	middlewares() {
 		// "use" is the keyword to middlewares.
 		this.app.use(express.static('public'));
+		this.app.use(cors());
 	}
 
 	routes() {
@@ -46,6 +48,7 @@ export class Server {
 
 	listen() {
 		this.app.listen(this.port, () => {
+			console.clear();
 			console.log(`server running in port: ${this.port}`);
 		});
 	}
