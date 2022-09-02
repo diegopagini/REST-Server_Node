@@ -1,0 +1,16 @@
+{
+	"name": "rest-server",
+	"version": "1.0.0",
+	"description": "Rest server made with node.",
+	"main": "app.js",
+	"type": "module",
+	"scripts": {
+		"start": ""
+	},
+	"keywords": [
+		"rest",
+		"server"
+	],
+	"author": "Diego Pagini",
+	"license": "ISC"
+}
