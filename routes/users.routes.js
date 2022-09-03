@@ -10,6 +10,6 @@ router.get('/', usersGet); // We call the reference to our function "usersGet".
 
 router.post('/', usersPost);
 
-router.put('/', usersPut);
+router.put('/:id', usersPut); // :id to allow a param in the route.
 
 router.delete('/', usersDelete);
