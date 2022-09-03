@@ -2,10 +2,13 @@
 import cors from 'cors';
 import express from 'express';
 
+import { router } from '../routes/users.routes.js';
+
 export class Server {
 	constructor() {
 		this.app = express();
 		this.port = process.env.PORT;
+		this.usersRouter = '/api/users'; // Routes for the users.
 
 		// Middlewares
 		this.middlewares();
@@ -13,39 +16,25 @@ export class Server {
 		this.routes();
 	}
 
+	/**
+	 * Middlewares for the server.
+	 */
 	middlewares() {
 		// "use" is the keyword to middlewares.
 		this.app.use(express.static('public'));
 		this.app.use(cors());
 	}
 
+	/**
+	 * Routes for the server.
+	 */
 	routes() {
-		// "get", "post", "put", "delete", etc. are the keywords to routes.
-		this.app.get('/api', (req, res) => {
-			res.status(200).json({
-				message: 'get API',
-			});
-		});
-
-		this.app.post('/api', (req, res) => {
-			res.status(201).json({
-				message: 'post API',
-			});
-		});
-
-		this.app.put('/api', (req, res) => {
-			res.status(400).json({
-				message: 'put API',
-			});
-		});
-
-		this.app.delete('/api', (req, res) => {
-			res.status(500).json({
-				message: 'delete API',
-			});
-		});
+		this.app.use(this.usersRouter, router); // For the "/api/users" path we use the routes that we defined in our user.routes.js file
 	}
 
+	/**
+	 * To start de server.
+	 */
 	listen() {
 		this.app.listen(this.port, () => {
 			console.clear();
