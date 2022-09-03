@@ -9,7 +9,6 @@ export class Server {
 		this.app = express();
 		this.port = process.env.PORT;
 		this.usersRouter = '/api/users'; // Routes for the users.
-
 		// Middlewares
 		this.middlewares();
 		// Routes
@@ -21,8 +20,9 @@ export class Server {
 	 */
 	middlewares() {
 		// "use" is the keyword to middlewares.
-		this.app.use(express.static('public'));
-		this.app.use(cors());
+		this.app.use(express.static('public')); // To use the files in the public folder.
+		this.app.use(express.json()); // To read and parse the body of the requests.
+		this.app.use(cors()); // To allow cors.
 	}
 
 	/**
