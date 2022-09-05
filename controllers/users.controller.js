@@ -1,6 +1,7 @@
 /** @format */
 import bcryptjs from 'bcryptjs';
 import { request, response } from 'express';
+import { validationResult } from 'express-validator';
 
 import { User } from '../models/user.js';
 
@@ -14,6 +15,9 @@ export const usersGet = (req = request, res = response) => {
 };
 
 export const usersPost = async (req = request, res = response) => {
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) return res.status(400).json(errors);
+
 	const { name, email, password, role } = req.body;
 	const user = new User({
 		name,
@@ -22,6 +26,11 @@ export const usersPost = async (req = request, res = response) => {
 		role,
 	});
 	// Check if the email already exist.
+	const emailExist = await User.findOne({ email });
+	if (emailExist)
+		return res.status(400).json({
+			error: 'Email already registered.',
+		});
 
 	// Encrypt the password.
 	const salt = bcryptjs.genSaltSync(); // number of turns in the encryption cycle.
