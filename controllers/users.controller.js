@@ -1,15 +1,24 @@
 /** @format */
 import bcryptjs from 'bcryptjs';
-import { request, response } from 'express';
+import { request } from 'express';
 
 import { User } from '../models/user.js';
 
 // req = request and res = response to have the types for the response in JS...
-export const usersGet = (req = request, res = response) => {
+export const usersGet = async (req = request, res = response) => {
 	const { query } = req; // Query are all the optionals query params: "?name="...
+	const { limit = 5, from = 0 } = query;
+
+	// [total, users] = destructuring of arrays
+	const [total, users] = await Promise.all([
+		// Promise.all() to execute all promises at the same time.
+		User.countDocuments({ status: true }),
+		User.find({ status: true }).skip(Number(from)).limit(Number(limit)),
+	]);
+
 	res.status(200).json({
-		message: 'get API - Controller',
-		query,
+		total,
+		users,
 	});
 };
 
