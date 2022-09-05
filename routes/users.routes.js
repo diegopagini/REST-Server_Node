@@ -36,4 +36,12 @@ router.put(
 	usersPut
 ); // :id to allow a param in the route.
 
-router.delete('/', usersDelete);
+router.delete(
+	'/:id',
+	[
+		check('id', 'Is not a valid id').isMongoId(),
+		check('id').custom(userByIdExists),
+		validateFields,
+	],
+	usersDelete
+);

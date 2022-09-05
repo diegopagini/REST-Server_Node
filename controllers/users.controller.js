@@ -60,8 +60,13 @@ export const usersPut = async (req = request, res = response) => {
 	});
 };
 
-export const usersDelete = (req = request, res = response) => {
+export const usersDelete = async (req = request, res = response) => {
+	const { id } = req.params;
+
+	// const user = await User.findByIdAndDelete(id); to delete physically. Not recommended.
+	const user = await User.findByIdAndUpdate(id, { status: false }); // To change the status of the user.
+
 	res.status(200).json({
-		message: 'delete API - Controller',
+		user,
 	});
 };
