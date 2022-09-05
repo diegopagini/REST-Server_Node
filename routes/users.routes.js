@@ -3,7 +3,7 @@ import { Router } from 'express';
 import { check } from 'express-validator';
 
 import { usersDelete, usersGet, usersPost, usersPut } from '../controllers/users.controller.js';
-import { emailExists, isRoleValid } from '../helpers/db-validators.js';
+import { emailExists, isRoleValid, userByIdExists } from '../helpers/db-validators.js';
 import { validateFields } from '../middlewares/validate-fields.js';
 
 export const router = Router(); // Instance of router from express.
@@ -25,6 +25,15 @@ router.post(
 	usersPost
 ); // The second param is an array of middlewares.
 
-router.put('/:id', [], usersPut); // :id to allow a param in the route.
+router.put(
+	'/:id',
+	[
+		check('id', 'Is not a valid id').isMongoId(),
+		check('id').custom(userByIdExists),
+		check('role').custom(isRoleValid),
+		validateFields,
+	],
+	usersPut
+); // :id to allow a param in the route.
 
 router.delete('/', usersDelete);

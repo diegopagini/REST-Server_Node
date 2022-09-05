@@ -36,7 +36,7 @@ export const usersPost = async (req = request, res = response) => {
 
 export const usersPut = async (req = request, res = response) => {
 	const { id } = req.params;
-	const { password, google, ...rest } = req.body;
+	const { _id, password, google, email, ...rest } = req.body;
 
 	if (password) {
 		// Encrypt the password.
