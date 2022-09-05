@@ -25,6 +25,6 @@ router.post(
 	usersPost
 ); // The second param is an array of middlewares.
 
-router.put('/:id', usersPut); // :id to allow a param in the route.
+router.put('/:id', [], usersPut); // :id to allow a param in the route.
 
 router.delete('/', usersDelete);

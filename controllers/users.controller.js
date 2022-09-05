@@ -34,12 +34,20 @@ export const usersPost = async (req = request, res = response) => {
 	});
 };
 
-export const usersPut = (req = request, res = response) => {
+export const usersPut = async (req = request, res = response) => {
 	const { id } = req.params;
+	const { password, google, ...rest } = req.body;
+
+	if (password) {
+		// Encrypt the password.
+		const salt = bcryptjs.genSaltSync(); // number of turns in the encryption cycle.
+		rest.password = bcryptjs.hashSync(password, salt); // encrypt method.
+	}
+
+	const user = await User.findByIdAndUpdate(id, rest);
 
 	res.status(200).json({
-		message: 'put API - Controller',
-		id,
+		user,
 	});
 };
 
