@@ -21,12 +21,6 @@ export const usersPost = async (req = request, res = response) => {
 		password,
 		role,
 	});
-	// Check if the email already exist.
-	const emailExist = await User.findOne({ email });
-	if (emailExist)
-		return res.status(400).json({
-			error: 'Email already registered.',
-		});
 
 	// Encrypt the password.
 	const salt = bcryptjs.genSaltSync(); // number of turns in the encryption cycle.
