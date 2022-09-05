@@ -1,4 +1,5 @@
 /** @format */
+import bcryptjs from 'bcryptjs';
 import { request, response } from 'express';
 
 import { User } from '../models/user.js';
@@ -13,9 +14,20 @@ export const usersGet = (req = request, res = response) => {
 };
 
 export const usersPost = async (req = request, res = response) => {
-	const { body } = req;
-	const user = new User(body);
+	const { name, email, password, role } = req.body;
+	const user = new User({
+		name,
+		email,
+		password,
+		role,
+	});
+	// Check if the email already exist.
 
+	// Encrypt the password.
+	const salt = bcryptjs.genSaltSync(); // number of turns in the encryption cycle.
+	user.password = bcryptjs.hashSync(password, salt); // encrypt method.
+
+	// Save in DB.
 	await user.save(); // To save the user in the data base.
 
 	res.status(200).json({
