@@ -35,4 +35,10 @@ const UserSchema = Schema({
 	},
 });
 
+UserSchema.methods.toJSON = function () {
+	// To override the method from mongoose.
+	const { __v, password, ...user } = this.toObject(); // It will delete the version and password in our model (Not in the database).
+	return user;
+};
+
 export const User = model('User', UserSchema);
