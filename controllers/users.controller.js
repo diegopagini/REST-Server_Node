@@ -1,6 +1,8 @@
 /** @format */
 import { request, response } from 'express';
 
+import { User } from '../models/user.js';
+
 // req = request and res = response to have the types for the response in JS...
 export const usersGet = (req = request, res = response) => {
 	const { query } = req; // Query are all the optionals query params: "?name="...
@@ -10,12 +12,14 @@ export const usersGet = (req = request, res = response) => {
 	});
 };
 
-export const usersPost = (req = request, res = response) => {
+export const usersPost = async (req = request, res = response) => {
 	const { body } = req;
+	const user = new User(body);
+
+	await user.save(); // To save the user in the data base.
 
 	res.status(200).json({
-		message: 'post API - Controller',
-		body,
+		user,
 	});
 };
 
