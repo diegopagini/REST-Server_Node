@@ -2,6 +2,7 @@
 import bcryptjs from 'bcryptjs';
 import { request, response } from 'express';
 
+import { generateJWT } from '../helpers/jwt.js';
 import { User } from '../models/user.js';
 
 export const login = async (req = request, res = response) => {
@@ -17,9 +18,11 @@ export const login = async (req = request, res = response) => {
 		const validPassword = bcryptjs.compareSync(password, user.password);
 		if (!validPassword) return res.status(400).json({ message: 'User / Password not valid.' });
 		// generate JWT
+		const token = await generateJWT(user.id);
 
 		return res.json({
 			user,
+			token,
 		});
 	} catch (error) {
 		console.log(error);
