@@ -48,7 +48,6 @@ export class Server {
 	 */
 	listen() {
 		this.app.listen(this.port, () => {
-			console.clear();
 			console.log(`server running in port: ${this.port}`);
 		});
 	}

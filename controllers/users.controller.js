@@ -16,7 +16,7 @@ export const usersGet = async (req = request, res = response) => {
 		User.find({ status: true }).skip(Number(from)).limit(Number(limit)),
 	]);
 
-	res.status(200).json({
+	return res.status(200).json({
 		total,
 		users,
 	});
@@ -38,7 +38,7 @@ export const usersPost = async (req = request, res = response) => {
 	// Save in DB.
 	await user.save(); // To save the user in the data base.
 
-	res.status(200).json({
+	return res.status(200).json({
 		user,
 	});
 };
@@ -55,7 +55,7 @@ export const usersPut = async (req = request, res = response) => {
 
 	const user = await User.findByIdAndUpdate(id, rest);
 
-	res.status(200).json({
+	return res.status(200).json({
 		user,
 	});
 };
@@ -66,7 +66,7 @@ export const usersDelete = async (req = request, res = response) => {
 	// const user = await User.findByIdAndDelete(id); to delete physically. Not recommended.
 	const user = await User.findByIdAndUpdate(id, { status: false }); // To change the status of the user.
 
-	res.status(200).json({
+	return res.status(200).json({
 		user,
 	});
 };
