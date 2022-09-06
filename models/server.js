@@ -3,13 +3,15 @@ import cors from 'cors';
 import express from 'express';
 
 import { dbConnection } from '../database/config.db.js';
-import { router } from '../routes/users.routes.js';
+import { authRouter } from '../routes/auth.routes.js';
+import { userRouter } from '../routes/users.routes.js';
 
 export class Server {
 	constructor() {
 		this.app = express();
 		this.port = process.env.PORT;
 		this.usersRouter = '/api/users'; // Routes for the users.
+		this.authPath = '/api/auth'; // Routes for authentication.
 
 		// DB Connection
 		this.dbConnect();
@@ -37,7 +39,8 @@ export class Server {
 	 * Routes for the server.
 	 */
 	routes() {
-		this.app.use(this.usersRouter, router); // For the "/api/users" path we use the routes that we defined in our user.routes.js file
+		this.app.use(this.authPath, authRouter); // For /api/auth
+		this.app.use(this.usersRouter, userRouter); // For the "/api/users" path we use the routes that we defined in our user.routes.js file
 	}
 
 	/**

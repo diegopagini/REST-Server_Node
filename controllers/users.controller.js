@@ -1,6 +1,6 @@
 /** @format */
 import bcryptjs from 'bcryptjs';
-import { request } from 'express';
+import { request, response } from 'express';
 
 import { User } from '../models/user.js';
 

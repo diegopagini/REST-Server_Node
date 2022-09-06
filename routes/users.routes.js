@@ -6,12 +6,12 @@ import { usersDelete, usersGet, usersPost, usersPut } from '../controllers/users
 import { emailExists, isRoleValid, userByIdExists } from '../helpers/db-validators.js';
 import { validateFields } from '../middlewares/validate-fields.js';
 
-export const router = Router(); // Instance of router from express.
+export const userRouter = Router(); // Instance of router from express.
 
 // "get", "post", "put", "delete", etc. are the keywords to use routes.
-router.get('/', usersGet); // We call the reference to our function "usersGet".
+userRouter.get('/', usersGet); // We call the reference to our function "usersGet".
 
-router.post(
+userRouter.post(
 	'/',
 	[
 		check('email', 'Invalid email').isEmail(),
@@ -25,7 +25,7 @@ router.post(
 	usersPost
 ); // The second param is an array of middlewares.
 
-router.put(
+userRouter.put(
 	'/:id',
 	[
 		check('id', 'Is not a valid id').isMongoId(),
@@ -36,7 +36,7 @@ router.put(
 	usersPut
 ); // :id to allow a param in the route.
 
-router.delete(
+userRouter.delete(
 	'/:id',
 	[
 		check('id', 'Is not a valid id').isMongoId(),
