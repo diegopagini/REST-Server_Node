@@ -37,7 +37,8 @@ const UserSchema = Schema({
 
 UserSchema.methods.toJSON = function () {
 	// To override the method from mongoose.
-	const { __v, password, ...user } = this.toObject(); // It will delete the version and password in our model (Not in the database).
+	const { __v, password, _id, ...user } = this.toObject(); // It will delete the version and password in our model (Not in the database).
+	user.uid = _id; // To visually change _id to uid.
 	return user;
 };
 
