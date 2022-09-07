@@ -4,8 +4,7 @@ import { check } from 'express-validator';
 
 import { usersDelete, usersGet, usersPost, usersPut } from '../controllers/users.controller.js';
 import { emailExists, isRoleValid, userByIdExists } from '../helpers/db-validators.js';
-import { validateFields } from '../middlewares/validate-fields.js';
-import { validateJWT } from '../middlewares/validate-jwt.js';
+import { hasRole, isAdminRole, validateFields, validateJWT } from '../middlewares/index.js';
 
 export const userRouter = Router(); // Instance of router from express.
 
@@ -40,7 +39,9 @@ userRouter.put(
 userRouter.delete(
 	'/:id',
 	[
+		hasRole('ADMIN_ROLE', 'VENTAS_ROLE'),
 		validateJWT, // To check if the user has a valid token.
+		isAdminRole, // To check if is an admin.
 		check('id', 'Is not a valid id').isMongoId(),
 		check('id').custom(userByIdExists),
 		validateFields,
