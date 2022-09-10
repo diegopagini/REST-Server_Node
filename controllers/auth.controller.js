@@ -31,3 +31,11 @@ export const login = async (req = request, res = response) => {
 		});
 	}
 };
+
+export const googleSignIn = async (req = request, res = response) => {
+	const { id_token } = req.body;
+
+	return res.json({
+		id_token,
+	});
+};
