@@ -2,6 +2,7 @@
 import bcryptjs from 'bcryptjs';
 import { request, response } from 'express';
 
+import { googleVerify } from '../helpers/google-verify.js';
 import { generateJWT } from '../helpers/jwt.js';
 import { User } from '../models/user.js';
 
@@ -35,7 +36,18 @@ export const login = async (req = request, res = response) => {
 export const googleSignIn = async (req = request, res = response) => {
 	const { id_token } = req.body;
 
-	return res.json({
-		id_token,
-	});
+	try {
+		const { name, picture, email } = await googleVerify(id_token);
+
+		return res.status(200).json({
+			name,
+			picture,
+			email,
+		});
+	} catch (error) {
+		return res.status(400).json({
+			msg: 'Error with token',
+			error,
+		});
+	}
 };
