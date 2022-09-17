@@ -37,12 +37,36 @@ export const googleSignIn = async (req = request, res = response) => {
 	const { id_token } = req.body;
 
 	try {
+		// Verify with google
 		const { name, picture, email } = await googleVerify(id_token);
 
+		// Find user
+		let user = await User.findOne({ email });
+
+		// If user doesn't exist
+		if (!user) {
+			const data = {
+				name,
+				email,
+				password: 'empty',
+				img: picture,
+				google: true,
+			};
+
+			user = new User(data);
+			await user.save();
+		}
+
+		if (!user.status)
+			return res.status(401).json({
+				msg: 'Bloqued user',
+			});
+
+		const token = await generateJWT(user.id);
+
 		return res.status(200).json({
-			name,
-			picture,
-			email,
+			user,
+			token,
 		});
 	} catch (error) {
 		return res.status(400).json({
