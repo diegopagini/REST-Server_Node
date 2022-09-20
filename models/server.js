@@ -4,14 +4,19 @@ import express from 'express';
 
 import { dbConnection } from '../database/config.db.js';
 import { authRouter } from '../routes/auth.routes.js';
+import { categoriesRouter } from '../routes/categories.routes.js';
 import { userRouter } from '../routes/users.routes.js';
 
 export class Server {
 	constructor() {
 		this.app = express();
 		this.port = process.env.PORT;
-		this.usersRouter = '/api/users'; // Routes for the users.
-		this.authPath = '/api/auth'; // Routes for authentication.
+
+		this.paths = {
+			auth: '/api/auth',
+			user: '/api/users',
+			categories: '/api/categories',
+		};
 
 		// DB Connection
 		this.dbConnect();
@@ -39,8 +44,9 @@ export class Server {
 	 * Routes for the server.
 	 */
 	routes() {
-		this.app.use(this.authPath, authRouter); // For /api/auth
-		this.app.use(this.usersRouter, userRouter); // For the "/api/users" path we use the routes that we defined in our user.routes.js file
+		this.app.use(this.paths.auth, authRouter); // For /api/auth
+		this.app.use(this.paths.user, userRouter); // For the "/api/users" path we use the routes that we defined in our user.routes.js file
+		this.app.use(this.paths.categories, categoriesRouter);
 	}
 
 	/**
