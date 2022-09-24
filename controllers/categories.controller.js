@@ -47,3 +47,15 @@ export const createCategory = async (req = request, res = response) => {
 
 	return res.status(201).json(category);
 };
+
+export const updateCategory = async (req = request, res = response) => {
+	const { id } = req.params;
+	const { status, user, ...data } = req.body;
+
+	data.name = data.name.toUpperCase();
+	data.user = req.user._id;
+
+	const category = await Category.findByIdAndUpdate(id, data, { new: true }); // data is the change that we want to do.
+
+	return res.status(200).json(category);
+};

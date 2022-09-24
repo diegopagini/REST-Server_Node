@@ -2,7 +2,7 @@
 import { request, response, Router } from 'express';
 import { check } from 'express-validator';
 
-import { createCategory, getCategories, getCategory } from '../controllers/categories.controller.js';
+import { createCategory, getCategories, getCategory, updateCategory } from '../controllers/categories.controller.js';
 import { categoryExistById } from '../helpers/db-validators.js';
 import { validateFields, validateJWT } from '../middlewares/index.js';
 
@@ -38,11 +38,16 @@ categoriesRouter.post(
 /**
  * Update a categorie.
  */
-categoriesRouter.put('/:id', (req = request, res = response) => {
-	return res.status(200).json({
-		msg: 'update',
-	});
-});
+categoriesRouter.put(
+	'/:id',
+	[
+		validateJWT,
+		check('name', 'Name is required').not().isEmpty(),
+		check('id').custom(categoryExistById),
+		validateFields,
+	],
+	updateCategory
+);
 
 /**
  * Delete a categorie.
