@@ -1,10 +1,16 @@
 /** @format */
-import { request, response, Router } from 'express';
+import { Router } from 'express';
 import { check } from 'express-validator';
 
-import { createCategory, getCategories, getCategory, updateCategory } from '../controllers/categories.controller.js';
+import {
+  createCategory,
+  deteleCategory,
+  getCategories,
+  getCategory,
+  updateCategory,
+} from '../controllers/categories.controller.js';
 import { categoryExistById } from '../helpers/db-validators.js';
-import { validateFields, validateJWT } from '../middlewares/index.js';
+import { isAdminRole, validateFields, validateJWT } from '../middlewares/index.js';
 
 export const categoriesRouter = Router(); // Instance of router from express.
 
@@ -52,8 +58,14 @@ categoriesRouter.put(
 /**
  * Delete a categorie.
  */
-categoriesRouter.delete('/:id', (req = request, res = response) => {
-	return res.status(200).json({
-		msg: 'delete',
-	});
-});
+categoriesRouter.delete(
+	'/:id',
+	[
+		validateJWT,
+		isAdminRole,
+		check('id', 'Is not a Mongo ID').isMongoId(),
+		check('id').custom(categoryExistById),
+		validateFields,
+	],
+	deteleCategory
+);
