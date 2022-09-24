@@ -21,4 +21,10 @@ const CategorySchema = Schema({
 	},
 });
 
+CategorySchema.methods.toJSON = function () {
+	// To override the method from mongoose.
+	const { __v, status, ...data } = this.toObject(); // It will delete the status and version in our model (Not in the database).
+	return data;
+};
+
 export const Category = model('Category', CategorySchema);

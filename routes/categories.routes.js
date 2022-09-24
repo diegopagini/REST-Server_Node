@@ -2,7 +2,8 @@
 import { request, response, Router } from 'express';
 import { check } from 'express-validator';
 
-import { createCategory } from '../controllers/categories.controller.js';
+import { createCategory, getCategories, getCategory } from '../controllers/categories.controller.js';
+import { categoryExistById } from '../helpers/db-validators.js';
 import { validateFields, validateJWT } from '../middlewares/index.js';
 
 export const categoriesRouter = Router(); // Instance of router from express.
@@ -10,20 +11,20 @@ export const categoriesRouter = Router(); // Instance of router from express.
 /**
  * Get all categories
  */
-categoriesRouter.get('/', (req = request, res = response) => {
-	return res.status(200).json({
-		msg: 'Todo OK',
-	});
-});
+categoriesRouter.get('/', getCategories); // No validations.
 
 /**
  * Get details from a categorie.
  */
-categoriesRouter.get('/:id', (req = request, res = response) => {
-	return res.status(200).json({
-		msg: 'Get - id',
-	});
-});
+categoriesRouter.get(
+	'/:id',
+	[
+		check('id', 'Is not a Mongo ID').isMongoId(),
+		check('id').custom(categoryExistById),
+		validateFields,
+	],
+	getCategory
+);
 
 /**
  * Create a new categorie.

@@ -1,4 +1,5 @@
 /** @format */
+import { Category } from '../models/category.js';
 import { Role } from '../models/role.js';
 import { User } from '../models/user.js';
 
@@ -15,5 +16,10 @@ export const emailExists = async (email = '') => {
 
 export const userByIdExists = async (id = '') => {
 	const exists = await User.findById(id);
+	if (!exists) throw new Error(`ID: ${id} not exist.`);
+};
+
+export const categoryExistById = async (id = '') => {
+	const exists = await Category.findById(id);
 	if (!exists) throw new Error(`ID: ${id} not exist.`);
 };
