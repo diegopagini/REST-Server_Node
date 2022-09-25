@@ -9,7 +9,11 @@ export const getProducts = async (req = request, res = response) => {
 	const [total, products] = await Promise.all([
 		// Promise.all() to execute all promises at the same time.
 		Product.countDocuments({ status: true }),
-		Product.find(query).populate('user', 'name').skip(Number(from)).limit(Number(limit)),
+		Product.find(query)
+			.populate('user', 'name')
+			.populate('category', 'name')
+			.skip(Number(from))
+			.limit(Number(limit)),
 	]);
 
 	return res.status(200).json({
@@ -20,13 +24,13 @@ export const getProducts = async (req = request, res = response) => {
 
 export const getProduct = async (req = request, res = response) => {
 	const { id } = req.params;
-	const Product = await Product.findById(id).populate('user', 'name');
+	const Product = await Product.findById(id).populate('user', 'name').populate('category', 'name');
 
 	return res.status(200).json(Product);
 };
 
 export const createProduct = async (req = request, res = response) => {
-	const name = req.body.name.toUpperCase();
+	const { status, user, name, ...body } = req.body; // Ignore status and user
 	const ProductDB = await Product.findOne({ name });
 
 	if (ProductDB)
@@ -35,13 +39,14 @@ export const createProduct = async (req = request, res = response) => {
 		});
 
 	const data = {
-		name,
+		name: name.toUpperCase(),
 		user: req.user._id,
+		body,
 	};
 
 	// Save in DB
-	const Product = await new Product(data);
-	await Product.save();
+	const product = await new Product(data);
+	await product.save();
 
 	return res.status(201).json(Product);
 };
@@ -50,12 +55,13 @@ export const updateProduct = async (req = request, res = response) => {
 	const { id } = req.params;
 	const { status, user, ...data } = req.body;
 
-	data.name = data.name.toUpperCase();
+	if (data.name) data.name = data.name.toUpperCase();
+
 	data.user = req.user._id;
 
-	const Product = await Product.findByIdAndUpdate(id, data, { new: true }); // data is the change that we want to do.
+	const product = await Product.findByIdAndUpdate(id, data, { new: true }); // data is the change that we want to do.
 
-	return res.status(200).json(Product);
+	return res.status(200).json(product);
 };
 
 export const deteleProduct = async (req = request, res = response) => {

@@ -3,7 +3,7 @@ import { Router } from 'express';
 import { check } from 'express-validator';
 
 import { createProduct, deteleProduct, getProduct, getProducts, updateProduct } from '../controllers/products.controller.js';
-import { categoryExistById } from '../helpers/db-validators.js';
+import { categoryExistById, productExistById } from '../helpers/db-validators.js';
 import { isAdminRole, validateFields, validateJWT } from '../middlewares/index.js';
 
 export const productsRouter = Router(); // Instance of router from express.
@@ -20,7 +20,7 @@ productsRouter.get(
 	'/:id',
 	[
 		check('id', 'Is not a Mongo ID').isMongoId(),
-		check('id').custom(categoryExistById),
+		check('id').custom(productExistById),
 		validateFields,
 	],
 	getProduct
@@ -31,7 +31,13 @@ productsRouter.get(
  */
 productsRouter.post(
 	'/',
-	[validateJWT, check('name', 'Name is required').not().isEmpty(), validateFields], // Middlewares.
+	[
+		validateJWT,
+		check('name', 'Name is required').not().isEmpty(),
+		check('category', 'Is not a Mongo Category').isMongoId(),
+		check('category').custom(categoryExistById),
+		validateFields,
+	], // Middlewares.
 	createProduct // Controller.
 );
 
@@ -42,8 +48,8 @@ productsRouter.put(
 	'/:id',
 	[
 		validateJWT,
-		check('name', 'Name is required').not().isEmpty(),
-		check('id').custom(categoryExistById),
+		check('id').custom(productExistById),
+		check('category', 'Is not a Mongo Category').isMongoId(),
 		validateFields,
 	],
 	updateProduct
@@ -58,7 +64,7 @@ productsRouter.delete(
 		validateJWT,
 		isAdminRole,
 		check('id', 'Is not a Mongo ID').isMongoId(),
-		check('id').custom(categoryExistById),
+		check('id').custom(productExistById),
 		validateFields,
 	],
 	deteleProduct
