@@ -46,12 +46,7 @@ productsRouter.post(
  */
 productsRouter.put(
 	'/:id',
-	[
-		validateJWT,
-		check('id').custom(productExistById),
-		check('category', 'Is not a Mongo Category').isMongoId(),
-		validateFields,
-	],
+	[validateJWT, check('id').custom(productExistById), validateFields],
 	updateProduct
 );
 
