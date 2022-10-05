@@ -1,13 +1,15 @@
 /** @format */
 import { request, response } from 'express';
-import { ObjectId } from 'mongoose';
+import Types from 'mongoose';
 
-import { Category, Product, User } from '../models/';
+import { Category } from '../models/category.js';
+import { Product } from '../models/product.js';
+import { User } from '../models/user.js';
 
 const allowedCollections = ['users', 'categories', 'products', 'roles'];
 
 const searchUsers = async (term = '', res = response) => {
-	const isMongoId = ObjectId.isValid(term);
+	const isMongoId = Types.ObjectId.isValid(term);
 
 	if (isMongoId) {
 		const user = await User.findById(term);
@@ -29,7 +31,7 @@ const searchUsers = async (term = '', res = response) => {
 };
 
 const searchCategories = async (term = '', res = response) => {
-	const isMongoId = ObjectId.isValid(term);
+	const isMongoId = Types.ObjectId.isValid(term);
 
 	if (isMongoId) {
 		const category = await Category.findById(term);
@@ -48,7 +50,7 @@ const searchCategories = async (term = '', res = response) => {
 };
 
 const searchProducts = async (term = '', res = response) => {
-	const isMongoId = ObjectId.isValid(term);
+	const isMongoId = Types.ObjectId.isValid(term);
 
 	if (isMongoId) {
 		const product = await Product.findById(term).populate('category', 'name');
