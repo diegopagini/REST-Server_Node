@@ -1,6 +1,7 @@
 /** @format */
 import cors from 'cors';
 import express from 'express';
+import fileUpload from 'express-fileupload';
 
 import { dbConnection } from '../database/config.db.js';
 import { authRouter } from '../routes/auth.routes.js';
@@ -44,6 +45,14 @@ export class Server {
 		this.app.use(express.static('public')); // To use the files in the public folder.
 		this.app.use(express.json()); // To read and parse the body of the requests.
 		this.app.use(cors()); // To allow cors.
+
+		this.app.use(
+			// Middleware to accept the file uploads.
+			fileUpload({
+				useTempFiles: true,
+				tempFileDir: '/tmp/',
+			})
+		);
 	}
 
 	/**
