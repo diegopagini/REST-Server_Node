@@ -6,9 +6,17 @@ export const uploadFile = async (req = request, res = response) => {
 		return res.status(400).json({ msg: 'No files were uploaded.' });
 	}
 
-	const fileName = await uploadFile(req.files);
+	try {
+		// const fileName = await uploadFile(req.files, ['txt', 'md'], 'texts');
+		// const fileName = await uploadFile(req.files, undefined, 'images');
+		const fileName = await uploadFile(req.files);
 
-	return res.json({
-		fileName,
-	});
+		return res.json({
+			fileName,
+		});
+	} catch (error) {
+		return res.status(400).json({
+			error,
+		});
+	}
 };

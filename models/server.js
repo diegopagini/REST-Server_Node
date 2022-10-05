@@ -51,6 +51,7 @@ export class Server {
 			fileUpload({
 				useTempFiles: true,
 				tempFileDir: '/tmp/',
+				createParentPath: true, // To create a folder if not exist.
 			})
 		);
 	}
