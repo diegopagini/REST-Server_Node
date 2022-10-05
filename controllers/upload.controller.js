@@ -1,18 +1,15 @@
 /** @format */
 import { request, response } from 'express';
 
+import { uploadFiles } from '../helpers/upload-file.js';
 import { Product } from '../models/product.js';
 import { User } from '../models/user.js';
 
 export const uploadFile = async (req = request, res = response) => {
-	if (!req.files || Object.keys(req.files).length === 0 || !req.files.file) {
-		return res.status(400).json({ msg: 'No files were uploaded.' });
-	}
-
 	try {
-		// const fileName = await uploadFile(req.files, ['txt', 'md'], 'texts');
-		// const fileName = await uploadFile(req.files, undefined, 'images');
-		const fileName = await uploadFile(req.files);
+		// const fileName = await uploadFiles(req.files, ['txt', 'md'], 'texts');
+		// const fileName = await uploadFiles(req.files, undefined, 'images');
+		const fileName = await uploadFiles(req.files);
 
 		return res.json({
 			fileName,
@@ -53,7 +50,7 @@ export const updateImage = async (req = request, res = response) => {
 			});
 	}
 
-	model.img = await uploadFile(req.files, undefined, collection);
+	model.img = await uploadFiles(req.files, undefined, collection);
 
 	await model.save();
 

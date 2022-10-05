@@ -1,7 +1,11 @@
 /** @format */
 import { v4 } from 'uuid';
 
-export const uploadFile = (files, validExtensions = ['png', 'jpg', 'jpeg', 'gif'], folder = '') => {
+export const uploadFiles = (
+	files,
+	validExtensions = ['png', 'jpg', 'jpeg', 'gif'],
+	folder = ''
+) => {
 	return new Promise((resolve, reject) => {
 		const { file } = files; // Body must have the "file".
 		const splitedName = file.name.split('.');
