@@ -2,7 +2,7 @@
 import { request, response } from 'express';
 import { ObjectId } from 'mongoose';
 
-import { User } from '../models/';
+import { Category, Product, User } from '../models/';
 
 const allowedCollections = ['users', 'categories', 'products', 'roles'];
 
@@ -28,6 +28,44 @@ const searchUsers = async (term = '', res = response) => {
 	});
 };
 
+const searchCategories = async (term = '', res = response) => {
+	const isMongoId = ObjectId.isValid(term);
+
+	if (isMongoId) {
+		const category = await Category.findById(term);
+		return res.json({
+			results: category ? [category] : [],
+		});
+	}
+
+	const regex = new RegExp(term, 'i'); // To make insensitive the term.
+
+	const categories = await Category.find({ name: regex, status: true });
+
+	return res.json({
+		results: categories,
+	});
+};
+
+const searchProducts = async (term = '', res = response) => {
+	const isMongoId = ObjectId.isValid(term);
+
+	if (isMongoId) {
+		const product = await Product.findById(term).populate('category', 'name');
+		return res.json({
+			results: product ? [product] : [],
+		});
+	}
+
+	const regex = new RegExp(term, 'i'); // To make insensitive the term.
+
+	const products = await Category.find({ name: regex, status: true }).populate('category', 'name');
+
+	return res.json({
+		results: products,
+	});
+};
+
 export const search = (req = request, res = response) => {
 	const { collection, term } = req.params;
 
@@ -38,17 +76,19 @@ export const search = (req = request, res = response) => {
 
 	switch (collection) {
 		case 'users':
-			searchUsers(term, response);
+			searchUsers(term, res);
 			break;
 
 		case 'categories':
+			searchCategories(term, res);
 			break;
 
 		case 'products':
+			searchProducts(term, res);
 			break;
 
 		default:
-			res.status(500).json({
+			return res.status(500).json({
 				msg: 'That option is not implemented...',
 			});
 	}
