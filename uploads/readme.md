@@ -2,4 +2,4 @@
 
 # Note
 
-Here will be the uploaded files.
+Here will be the uploaded files and folders.
