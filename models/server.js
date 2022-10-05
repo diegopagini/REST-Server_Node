@@ -6,6 +6,7 @@ import { dbConnection } from '../database/config.db.js';
 import { authRouter } from '../routes/auth.routes.js';
 import { categoriesRouter } from '../routes/categories.routes.js';
 import { productsRouter } from '../routes/products.routes.js';
+import { searchRouter } from '../routes/search.routes.js';
 import { userRouter } from '../routes/users.routes.js';
 
 export class Server {
@@ -15,9 +16,10 @@ export class Server {
 
 		this.paths = {
 			auth: '/api/auth',
-			user: '/api/users',
 			categories: '/api/categories',
 			products: '/api/products',
+			search: '/api/search',
+			user: '/api/users',
 		};
 
 		// DB Connection
@@ -50,6 +52,7 @@ export class Server {
 		this.app.use(this.paths.user, userRouter); // For the "/api/users" path we use the routes that we defined in our user.routes.js file
 		this.app.use(this.paths.categories, categoriesRouter);
 		this.app.use(this.paths.products, productsRouter);
+		this.app.use(this.paths.search, searchRouter);
 	}
 
 	/**
