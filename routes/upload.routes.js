@@ -1,8 +1,21 @@
 /** @format */
 import { Router } from 'express';
+import { check } from 'express-validator';
 
-import { uploadFile } from '../controllers/upload.controller.js';
+import { updateImage, uploadFile } from '../controllers/upload.controller.js';
+import { allowedCollections } from '../helpers/db-validators.js';
+import validateFields from '../middlewares/validate-fields.js';
 
 export const uploadRouter = Router(); // Instance of router from express.
 
 uploadRouter.post('/', [], uploadFile);
+
+uploadRouter.put(
+	'/:collection/:id',
+	[
+		check('id', 'Must be a mongo ID').isMongoId(),
+		check('collection').custom((c) => allowedCollections(c, ['users', 'products'])),
+		validateFields,
+	],
+	updateImage
+);

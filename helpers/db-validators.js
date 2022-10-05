@@ -29,3 +29,12 @@ export const productExistById = async (id = '') => {
 	const exists = await Product.findById(id);
 	if (!exists) throw new Error(`ID: ${id} not exist.`);
 };
+
+export const allowedCollections = async (collection = '', collections = []) => {
+	const isIncluded = collections.includes(collection);
+
+	if (!isIncluded) throw new Error(`${collection} is not allowed. `);
+
+	// If all is fine.
+	return true;
+};
