@@ -1,7 +1,7 @@
 /** @format */
 import { request, response } from 'express';
 
-import { Category } from '../models/index.js';
+import { Category } from '../models/category.js';
 
 export const getCategories = async (req = request, res = response) => {
 	const { query } = req; // Query are all the optionals query params: "?name="...
@@ -10,7 +10,7 @@ export const getCategories = async (req = request, res = response) => {
 	// [total, categories] = destructuring of arrays
 	const [total, categories] = await Promise.all([
 		// Promise.all() to execute all promises at the same time.
-		Category.countDocuments({ status: true }),
+		Category.countDocuments(query),
 		Category.find(query).populate('user', 'name').skip(Number(from)).limit(Number(limit)),
 	]);
 
