@@ -149,8 +149,12 @@ export const updateImageCloudinary = async (req = request, res = response) => {
 			});
 	}
 
-	// Clean all previous images.
+	// Clean all previous images from cloudinary.
 	if (model.img) {
+		const splittedName = model.img.split('/');
+		const name = splittedName[splittedName.length - 1];
+		const [public_id] = name.split('.');
+		await v2.uploader.destroy(public_id);
 	}
 
 	const { tempFilePath } = req.files.file;
