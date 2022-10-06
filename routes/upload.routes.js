@@ -2,7 +2,7 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
 
-import { updateImage, uploadFile } from '../controllers/upload.controller.js';
+import { showImage, updateImage, uploadFile } from '../controllers/upload.controller.js';
 import { allowedCollections } from '../helpers/db-validators.js';
 import validateFields from '../middlewares/validate-fields.js';
 import validateFiles from '../middlewares/validate-files.js';
@@ -20,4 +20,14 @@ uploadRouter.put(
 		validateFields,
 	],
 	updateImage
+);
+
+uploadRouter.get(
+	'/:collection/:id',
+	[
+		check('id', 'Must be a mongo ID').isMongoId(),
+		check('collection').custom((c) => allowedCollections(c, ['users', 'products'])),
+		validateFields,
+	],
+	showImage
 );

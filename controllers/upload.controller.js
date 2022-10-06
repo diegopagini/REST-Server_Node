@@ -67,3 +67,45 @@ export const updateImage = async (req = request, res = response) => {
 
 	return res.json(model);
 };
+
+export const showImage = async (req = request, res = response) => {
+	const { id, collection } = req.params;
+
+	let model;
+
+	switch (collection) {
+		case 'user':
+			model = await User.findById(id);
+			if (!model)
+				return res.status(400).json({
+					msg: `There is no user with ${id} id.`,
+				});
+			break;
+
+		case 'products':
+			model = await Product.findById(id);
+			if (!model)
+				return res.status(400).json({
+					msg: `There is no product with ${id} id.`,
+				});
+
+			break;
+
+		default:
+			return res.status(500).json({
+				msg: 'Error',
+			});
+	}
+
+	if (model.img) {
+		const imgPath = path.join(__dirname, '../uploads', collection, model.img);
+
+		if (fs.existsSync(imgPath)) {
+			return res.sendFile(img); // sendFile to send files to the frontend.
+		}
+	}
+
+	// If there is no image.
+	const pathImg = path.join(__dirname, '../assets/no-image.jpg');
+	return res.sendFile(pathImg);
+};
