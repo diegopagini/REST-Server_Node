@@ -1,4 +1,5 @@
 /** @format */
+import { v2 } from 'cloudinary';
 import { request, response } from 'express';
 import fs from 'fs';
 import path from 'path';
@@ -6,6 +7,9 @@ import path from 'path';
 import { uploadFiles } from '../helpers/upload-file.js';
 import { Product } from '../models/product.js';
 import { User } from '../models/user.js';
+
+// To configure cloudinary.
+v2.config(process.env.CLOUDINARY_URL);
 
 export const uploadFile = async (req = request, res = response) => {
 	try {
@@ -23,6 +27,12 @@ export const uploadFile = async (req = request, res = response) => {
 	}
 };
 
+/**
+ * To save files in local server.
+ * @param {request} req
+ * @param {response} res
+ * @returns Promise
+ */
 export const updateImage = async (req = request, res = response) => {
 	const { id, collection } = req.params;
 
@@ -108,4 +118,48 @@ export const showImage = async (req = request, res = response) => {
 	// If there is no image.
 	const pathImg = path.join(__dirname, '../assets/no-image.jpg');
 	return res.sendFile(pathImg);
+};
+
+export const updateImageCloudinary = async (req = request, res = response) => {
+	const { id, collection } = req.params;
+
+	let model;
+
+	switch (collection) {
+		case 'user':
+			model = await User.findById(id);
+			if (!model)
+				return res.status(400).json({
+					msg: `There is no user with ${id} id.`,
+				});
+			break;
+
+		case 'products':
+			model = await Product.findById(id);
+			if (!model)
+				return res.status(400).json({
+					msg: `There is no product with ${id} id.`,
+				});
+
+			break;
+
+		default:
+			return res.status(500).json({
+				msg: 'Error',
+			});
+	}
+
+	// Clean all previous images.
+	if (model.img) {
+	}
+
+	const { tempFilePath } = req.files.file;
+
+	const { secure_url } = await v2.uploader.upload(tempFilePath);
+
+	model.img = secure_url;
+
+	await model.save();
+
+	return res.json(model);
 };

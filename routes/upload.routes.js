@@ -2,14 +2,14 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
 
-import { showImage, updateImage, uploadFile } from '../controllers/upload.controller.js';
+import { showImage, updateImage, updateImageCloudinary } from '../controllers/upload.controller.js';
 import { allowedCollections } from '../helpers/db-validators.js';
 import validateFields from '../middlewares/validate-fields.js';
 import validateFiles from '../middlewares/validate-files.js';
 
 export const uploadRouter = Router(); // Instance of router from express.
 
-uploadRouter.post('/', [validateFiles], uploadFile);
+uploadRouter.post('/', [validateFiles], updateImageCloudinary);
 
 uploadRouter.put(
 	'/:collection/:id',
