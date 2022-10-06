@@ -1,5 +1,7 @@
 /** @format */
 import { request, response } from 'express';
+import fs from 'fs';
+import path from 'path';
 
 import { uploadFiles } from '../helpers/upload-file.js';
 import { Product } from '../models/product.js';
@@ -48,6 +50,15 @@ export const updateImage = async (req = request, res = response) => {
 			return res.status(500).json({
 				msg: 'Error',
 			});
+	}
+
+	// Clean all previous images.
+	if (model.img) {
+		const imgPath = path.join(__dirname, '../uploads', collection, model.img);
+
+		if (fs.existsSync(imgPath)) {
+			fs.unlinkSync(imgPath);
+		}
 	}
 
 	model.img = await uploadFiles(req.files, undefined, collection);
